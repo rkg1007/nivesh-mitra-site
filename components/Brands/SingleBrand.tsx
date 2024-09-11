@@ -24,7 +24,7 @@ const SingleBrand = ({ brand }: any) => {
         whileInView="visible"
         transition={{ duration: 1, delay: id }}
         viewport={{ once: true }}
-        className="animate_top mx-w-full relative block h-10 w-[200px]"
+        className="flex flex-col justify-center items-center animate_top mx-w-full relative h-10 w-[200px]"
       >
         <h1 className="text-xl text-black">{title}</h1>
         <p className="text-xs">{desciption}</p>
