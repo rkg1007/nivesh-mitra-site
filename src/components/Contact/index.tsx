@@ -59,7 +59,7 @@ const Contact = () => {
               <div className="mb-11.5 flex">
                 <textarea
                   placeholder="Message"
-                  rows={4}
+                  rows={2}
                   className="w-full border-b border-stroke bg-transparent focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white"
                 ></textarea>
               </div>

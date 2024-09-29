@@ -2,13 +2,13 @@
 import menuData from "@/data/menu-data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Header = () => {
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [dropdownToggler, setDropdownToggler] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
-
+  const navigationRef = useRef<HTMLDivElement>(null); // Reference for the navigation
   const pathUrl = usePathname();
 
   // Sticky menu
@@ -25,6 +25,23 @@ const Header = () => {
     window.addEventListener("scroll", handleStickyMenu);
     return () => {
       window.removeEventListener("scroll", handleStickyMenu);
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      console.log("clicking", navigationRef.current?.contains);
+      if (
+        navigationOpen &&
+        navigationRef.current &&
+        !navigationRef.current.contains(event.target)
+      ) {
+        setNavigationOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -48,7 +65,10 @@ const Header = () => {
             className="block xl:hidden"
             onClick={() => setNavigationOpen(!navigationOpen)}
           >
-            <span className="relative block h-5.5 w-5.5 cursor-pointer">
+            <span
+              ref={navigationRef} // Attach the reference to the navigation div
+              className="relative block h-5.5 w-5.5 cursor-pointer"
+            >
               <span className="absolute right-0 block h-full w-full">
                 <span
                   className={`relative left-0 top-0 my-1 block h-0.5 rounded-sm bg-black delay-[0] duration-200 ease-in-out dark:bg-white ${
