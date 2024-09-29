@@ -1,15 +1,13 @@
 "use client";
-import menuData from "@/data/menu-data";
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import DropDown from "./Dropdown";
+import menuData from "@/data/menu-data";
 
 const Header = () => {
   const [navigationOpen, setNavigationOpen] = useState(false);
-  const [dropdownToggler, setDropdownToggler] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
-  const navigationRef = useRef<HTMLDivElement>(null); // Reference for the navigation
-  const pathUrl = usePathname();
 
   // Sticky menu
   const handleStickyMenu = () => {
@@ -23,18 +21,16 @@ const Header = () => {
   useEffect(() => {
     handleStickyMenu();
     window.addEventListener("scroll", handleStickyMenu);
-    return () => {
-      window.removeEventListener("scroll", handleStickyMenu);
-    };
   }, []);
 
+  // hide navigation when clicked outside
   useEffect(() => {
     function handleClickOutside(event: any) {
-      console.log("clicking", navigationRef.current?.contains);
+      const navigationElement = document.querySelector(".navigation");
       if (
-        navigationOpen &&
-        navigationRef.current &&
-        !navigationRef.current.contains(event.target)
+        navigationElement &&
+        !navigationElement.contains(event.target) &&
+        navigationOpen
       ) {
         setNavigationOpen(false);
       }
@@ -43,127 +39,110 @@ const Header = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [navigationOpen]); // Added navigationOpen as a dependency
 
   return (
-    <header
-      className={`fixed left-0 top-0 z-99999 w-full py-7 ${
-        stickyMenu
-          ? "bg-white !py-4 shadow transition duration-100 dark:bg-black"
-          : ""
-      }`}
-    >
-      <div className="relative mx-auto max-w-c-1390 items-center justify-between px-4 md:px-8 xl:flex 2xl:px-0">
-        <div className="flex w-full items-center justify-between xl:w-1/4">
-          <a href="/">
-            <p className="text-2xl text-black">Nivesh Mitra</p>
-          </a>
+    <>
+      <header
+        className={` fixed left-0 top-0 z-9999 w-full bg-white py-7 transition-all duration-300 ease-in-out lg:py-0 ${
+          stickyMenu && "!py-4 shadow lg:!py-0"
+        }`}
+      >
+        <div className="navigation relative mx-auto max-w-[1170px] items-center justify-between px-4 sm:px-8 lg:flex xl:px-0 ">
+          <div className="flex w-full items-center justify-between lg:w-3/12">
+            <Link href="/">
+              <p className="text-2xl text-black">Nivesh Mitra</p>
+            </Link>
 
-          {/* <!-- Hamburger Toggle BTN --> */}
-          <button
-            aria-label="hamburger Toggler"
-            className="block xl:hidden"
-            onClick={() => setNavigationOpen(!navigationOpen)}
-          >
-            <span
-              ref={navigationRef} // Attach the reference to the navigation div
-              className="relative block h-5.5 w-5.5 cursor-pointer"
+            {/* <!-- Hamburger Toggle BTN --> */}
+            <button
+              className="block lg:hidden"
+              onClick={() => {
+                if (navigationOpen) {
+                  setNavigationOpen(false);
+                } else {
+                  setNavigationOpen(true);
+                }
+              }}
+              aria-label="mobile menu toggler"
             >
-              <span className="absolute right-0 block h-full w-full">
-                <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 rounded-sm bg-black delay-[0] duration-200 ease-in-out dark:bg-white ${
-                    !navigationOpen ? "!w-full delay-300" : "w-0"
-                  }`}
-                ></span>
-                <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 rounded-sm bg-black delay-150 duration-200 ease-in-out dark:bg-white ${
-                    !navigationOpen ? "delay-400 !w-full" : "w-0"
-                  }`}
-                ></span>
-                <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 rounded-sm bg-black delay-200 duration-200 ease-in-out dark:bg-white ${
-                    !navigationOpen ? "!w-full delay-500" : "w-0"
-                  }`}
-                ></span>
-              </span>
-              <span className="du-block absolute right-0 h-full w-full rotate-45">
-                <span
-                  className={`absolute left-2.5 top-0 block h-full w-0.5 rounded-sm bg-black delay-300 duration-200 ease-in-out dark:bg-white ${
-                    !navigationOpen ? "!h-0 delay-[0]" : "h-full"
-                  }`}
-                ></span>
-                <span
-                  className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-black duration-200 ease-in-out dark:bg-white ${
-                    !navigationOpen ? "!h-0 delay-200" : "h-0.5"
-                  }`}
-                ></span>
-              </span>
-            </span>
-          </button>
-          {/* <!-- Hamburger Toggle BTN --> */}
-        </div>
+              <span className="relative block h-5.5 w-5.5 cursor-pointer">
+                <span className="du-block absolute right-0 h-full w-full">
+                  <span
+                    className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-dark delay-[0] duration-200 ease-in-out ${
+                      !navigationOpen && "!w-full delay-300"
+                    }`}
+                  ></span>
 
-        {/* Nav Menu Start   */}
-        <div
-          className={`invisible h-0 w-full items-center justify-between xl:visible xl:flex xl:h-auto xl:w-full ${
-            navigationOpen &&
-            "navbar !visible mt-4 h-auto max-h-[400px] rounded-md bg-white p-7.5 shadow-solid-5 dark:bg-blacksection xl:h-auto xl:p-0 xl:shadow-none xl:dark:bg-transparent"
-          }`}
-        >
-          <nav>
-            <ul className="flex flex-col gap-5 xl:flex-row xl:items-center xl:gap-10">
-              {menuData.map((menuItem, key) => (
-                <li key={key} className={menuItem.submenu && "group relative"}>
-                  {menuItem.submenu ? (
-                    <>
-                      <button
-                        onClick={() => setDropdownToggler(!dropdownToggler)}
-                        className="flex cursor-pointer items-center justify-between gap-3 hover:text-primary"
-                      >
-                        {menuItem.title}
-                        <span>
-                          <svg
-                            className="h-3 w-3 cursor-pointer fill-waterloo group-hover:fill-primary"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"
-                          >
-                            <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
-                          </svg>
-                        </span>
-                      </button>
+                  <span
+                    className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-dark delay-150 duration-200 ease-in-out ${
+                      !navigationOpen && "delay-400 !w-full"
+                    }`}
+                  ></span>
+                  <span
+                    className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-dark delay-200 duration-200 ease-in-out ${
+                      !navigationOpen && "!w-full delay-500"
+                    }`}
+                  ></span>
+                </span>
+                <span className="du-block absolute right-0 h-full w-full rotate-45">
+                  <span
+                    className={`absolute left-2.5 top-0 block h-full w-0.5 rounded-sm bg-dark delay-300 duration-200 ease-in-out ${
+                      !navigationOpen && "!h-0 delay-[0]"
+                    }`}
+                  ></span>
+                  <span
+                    className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-dark duration-200 ease-in-out ${
+                      !navigationOpen && "dealy-200 !h-0"
+                    }`}
+                  ></span>
+                </span>
+              </span>
+            </button>
+          </div>
 
-                      <ul
-                        className={`dropdown ${dropdownToggler ? "flex" : ""}`}
-                      >
-                        {menuItem.submenu.map((item, key) => (
-                          <li key={key} className="hover:text-primary">
-                            <Link href={item.path || "#"}>{item.title}</Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  ) : (
-                    <Link
-                      href={`${menuItem.path}`}
-                      className={
-                        pathUrl === menuItem.path
-                          ? "text-primary hover:text-primary"
-                          : "hover:text-primary"
-                      }
-                    >
-                      {menuItem.title}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <div
+            className={` invisible h-0 w-full items-center justify-between lg:visible lg:flex lg:h-auto lg:w-9/12 ${
+              navigationOpen &&
+              `shadow-lgrelative !visible mt-4 !h-auto max-h-[400px] overflow-y-scroll rounded-md bg-white p-7.5`
+            }`}
+          >
+            <nav>
+              <ul className="flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-10">
+                {menuData.map((menuItem, key) => (
+                  <li
+                    className={`group relative lg:py-6.5 ${
+                      stickyMenu && "lg:!py-5.5"
+                    }`}
+                    key={key}
+                  >
+                    {menuItem.submenu ? (
+                      <DropDown
+                        menu={menuItem}
+                        key={key}
+                        setNavigationOpen={setNavigationOpen}
+                      />
+                    ) : (
+                      <>
+                        <Link
+                          onClick={() => setNavigationOpen(false)}
+                          href={menuItem.path ? menuItem.path : ""}
+                          className="flex items-center justify-between gap-3 hover:text-dark"
+                        >
+                          {menuItem.title}
+                        </Link>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            {/* <!-- Main Nav End --> */}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 };
-
-// w-full delay-300
 
 export default Header;

@@ -5,7 +5,7 @@ const BlogCard = ({ blog }: any) => {
   return (
     <div className="group">
       <div className="relative mb-6 aspect-[370/280] w-full overflow-hidden rounded-[10px] transition-all group-hover:scale-105">
-        <Link href={"/blog-details/blog-details-one"}>
+        <Link href={"/blogs/1"}>
           <Image
             src={blog.image}
             alt={"Some Alt Text"}
