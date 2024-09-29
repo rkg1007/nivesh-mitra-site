@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "baseUrl": ".",
     "allowJs": true,
     "skipLibCheck": true,
@@ -24,21 +20,12 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*",
-      ],
-      "react": [ "./node_modules/@types/react" ]
+      "@/public/*": ["./public/*"],
+      "@/*": ["./src/*"],
+      "react": ["./node_modules/@types/react"]
     },
     "strictNullChecks": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/data/blogs.js"],
+  "exclude": ["node_modules"]
 }
- 
