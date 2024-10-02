@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { H5 } from "./Heading";
 
 const BlogCard = ({ blog }: any) => {
   return (
@@ -14,11 +15,11 @@ const BlogCard = ({ blog }: any) => {
           />
         </div>
 
-        <h3>
+        <H5>
           <span className="bg-gradient-to-r from-primary/20 to-primary/10 bg-[length:0px_10px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 hover:bg-[length:100%_3px] group-hover:bg-[length:100%_10px]">
             {blog.title}
           </span>
-        </h3>
+        </H5>
         <p>{blog.description}</p>
 
         <div className="mt-4.5 flex flex-wrap items-center justify-between gap-3">
